@@ -46,4 +46,22 @@ public class UserAccountController {
         }
 
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<UserAccount> editUser(@PathVariable Long id,@RequestBody UserAccount userData){
+        Optional<UserAccount> userToEdit = Optional.ofNullable(userService.editUser(id, userData));
+        if(userToEdit == null || userToEdit.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+        else{
+            return ResponseEntity.ok(userToEdit.get());
+        }
+
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> disableUser(@PathVariable Long id){
+        userService.changeVisibility(id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
 }

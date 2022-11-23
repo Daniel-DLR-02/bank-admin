@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class UserAccountServiceImpl implements UserAccountService {
@@ -44,7 +43,19 @@ public class UserAccountServiceImpl implements UserAccountService {
 
     @Override
     public UserAccount editUser(Long id, UserAccount userToEdit) {
-        return null;
+        UserAccount editUser = getById(id);
+        if(editUser == null) {
+            return null;
+        }
+        else {
+            editUser.setUserName(userToEdit.getUserName());
+            editUser.setName(userToEdit.getName());
+            editUser.setPassword(userToEdit.getPassword());
+            editUser.setLastName(userToEdit.getLastName());
+
+        }
+        return editUser;
+
     }
 
     @Override
@@ -69,4 +80,12 @@ public class UserAccountServiceImpl implements UserAccountService {
     public List<UserAccount> getAll() {
         return mockUserDB;
     }
+
+    @Override
+    public void changeVisibility(Long id) {
+
+        getById(id).toggleVisibility();
+    }
+
+
 }

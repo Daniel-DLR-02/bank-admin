@@ -1,10 +1,11 @@
-com\solera\bank\model\Transactions$TransactionsBuilder.class
-com\solera\bank\service\UserAccountService.class
-com\solera\bank\config\cors\CorsFilter.class
-com\solera\bank\model\dto\LoginDto.class
+com\solera\bank\controller\TransactionsController.class
 com\solera\bank\service\impl\UserAccountServiceImpl.class
 com\solera\bank\model\UserAccount$UserAccountBuilder.class
 com\solera\bank\model\UserAccount.class
+com\solera\bank\model\Transaction$TransactionBuilder.class
 com\solera\bank\controller\UserAccountController.class
+com\solera\bank\service\UserAccountService.class
+com\solera\bank\config\cors\CorsFilter.class
+com\solera\bank\model\Transaction.class
+com\solera\bank\model\dto\LoginDto.class
 com\solera\bank\BankApplication.class
-com\solera\bank\model\Transactions.class

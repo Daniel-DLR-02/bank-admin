@@ -1,4 +1,4 @@
-package com.solera.bank.model;
+package com.solera.bank.model.dto;
 
 import lombok.*;
 
@@ -12,22 +12,15 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserAccount {
-
+public class EditUserDto {
     @GeneratedValue(strategy= GenerationType.AUTO)
     private Long id;
     private String name;
     private String lastName;
     private String userName;
     private String password;
-    private boolean visibility;
+    @Builder.Default
+    public boolean visible = true;
     @Builder.Default
     private List<String> bankAccounts = new ArrayList<>();
-
-
-    public void toggleVisibility(){
-        this.visibility=!this.visibility;
-    }
 }
-
-

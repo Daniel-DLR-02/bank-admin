@@ -4,7 +4,6 @@ import com.solera.bank.model.UserAccount;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public interface UserAccountService {
@@ -16,5 +15,9 @@ public interface UserAccountService {
     public UserAccount login(String username,String password);
 
     public List<UserAccount> getAll();
+
+
+    public void changeVisibility(Long id);
+
 
 }
