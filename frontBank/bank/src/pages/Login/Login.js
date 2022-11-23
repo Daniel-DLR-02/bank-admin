@@ -33,7 +33,6 @@ const Login = () => {
             console.log(error)
         });
 
-        // localStorage.setItem('user',User)
 
     }
 

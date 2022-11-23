@@ -61,7 +61,13 @@ public class TransactionServiceImpl implements TransactionService {
     @Override
     public List<Transaction> getTransactionsFromUser(Long idUser) {
         UserAccount usuario = userAccountService.getById(idUser);
-        List<Transaction> transactionsUser = mockTransactionDB.stream().filter(u -> u.getUserDestiny() == usuario.getUserName()).collect(Collectors.toList());
-        return transactionsUser;
+        List<Transaction> transactions = new ArrayList<>();
+        for(Transaction u : this.mockTransactionDB) {
+            if (u.getUserDestiny().equals(usuario.getUserName()) || u.getUserOrigin().equals(usuario.getUserName())) {
+                transactions.add(u);
+            }
+        }
+
+        return transactions;
     }
 }

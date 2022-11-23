@@ -1,0 +1,7 @@
+.userLogo{
+    width: 10%;
+}
+.card{
+    display: flex;
+    flex-direction: row;
+}

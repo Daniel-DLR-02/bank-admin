@@ -4,6 +4,7 @@ import com.solera.bank.model.Transaction;
 import com.solera.bank.model.dto.CreateTransactionDto;
 import com.solera.bank.service.TransactionService;
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,11 +15,15 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/transaction")
 public class TransactionsController {
-    TransactionService transactionService;
+    private final TransactionService transactionService;
 
     @GetMapping("/{id}")
-    public List<Transaction> getAllFromUser(@PathVariable Long id){
-        return transactionService.getTransactionsFromUser(id);
+    public ResponseEntity<List<Transaction>> getAllFromUser(@PathVariable Long id){
+        List<Transaction> transactions = transactionService.getTransactionsFromUser(id);
+        if(transactions == null)
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        else
+            return ResponseEntity.status(HttpStatus.OK).body(transactions);
     }
 
     @PostMapping("/")
