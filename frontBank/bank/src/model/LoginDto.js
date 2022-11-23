@@ -1,7 +1,7 @@
-class LoginDto {
+export class LoginDto {
     constructor(username, password) {
-        this.username = new Field(username);
-        this.password = new Field(password);
+        this.username = username;
+        this.password = password;
     }
     setName(username) {
         this.username.set(username);
