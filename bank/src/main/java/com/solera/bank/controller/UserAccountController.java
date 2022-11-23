@@ -1,27 +1,49 @@
 package com.solera.bank.controller;
 
 import com.solera.bank.model.UserAccount;
+import com.solera.bank.model.dto.LoginDto;
 import com.solera.bank.service.UserAccountService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/user")
+@RequiredArgsConstructor
 public class UserAccountController {
 
-    UserAccountService userService;
+    private final UserAccountService userService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getOneUser(@RequestParam Long id){
-        UserAccount userToReturn = userService.getById(id);
-        if(userToReturn != null) {
-            return ResponseEntity.ok(userToReturn);
+    public ResponseEntity<?> getOneUser(@PathVariable Long id){
+        Optional<UserAccount> userToReturn = Optional.ofNullable(userService.getById(id));
+        if(userToReturn == null || userToReturn.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
         else{
-            return (ResponseEntity<?>) ResponseEntity.notFound();
+            return ResponseEntity.ok(userToReturn);
         }
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<List<UserAccount>> getAll(){
+        return ResponseEntity.ok(userService.getAll());
+
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<UserAccount> login(@RequestBody LoginDto login){
+        Optional<UserAccount> userToLogin = Optional.ofNullable(userService.login(login.getUsername(), login.getPassword()));
+        if(userToLogin == null || userToLogin.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+        else{
+            return ResponseEntity.ok(userToLogin.get());
+        }
+
     }
 }

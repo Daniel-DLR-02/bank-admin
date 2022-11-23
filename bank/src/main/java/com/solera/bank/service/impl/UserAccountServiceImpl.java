@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserAccountServiceImpl implements UserAccountService {
@@ -24,17 +25,21 @@ public class UserAccountServiceImpl implements UserAccountService {
                 .build();
 
         mockUserDB.add(adminUser);
+
     }
 
     @Override
     public UserAccount getById(Long id) {
-        UserAccount requestedUser = mockUserDB.stream()
-                .filter(searchUser -> searchUser.getId() == id)
-                .reduce((a, b) -> {
-                    throw new IllegalStateException("Two elements with same id: " + a + ", " + b);
-                })
-                .get();
-        return null;
+        List<UserAccount> requestedUser = new ArrayList<>();
+        for(UserAccount u : mockUserDB)
+            if(u.getId().equals(id))
+                requestedUser.add(u);
+
+        if (requestedUser.size() != 1) {
+            return null;
+        }
+        else
+            return requestedUser.get(0);
     }
 
     @Override
@@ -43,7 +48,25 @@ public class UserAccountServiceImpl implements UserAccountService {
     }
 
     @Override
-    public boolean login(String username, String password) {
-        return false;
+    public UserAccount login(String username, String password) {
+        List<UserAccount> requestedUser = new ArrayList<>();
+        for(UserAccount u : mockUserDB)
+            if(u.getUserName().equals(username))
+                requestedUser.add(u);
+
+        if (requestedUser.size() != 1) {
+            return null;
+        }
+        else{
+            if(requestedUser.get(0).getPassword().equals(password))
+                return requestedUser.get(0);
+            else
+                return null;
+        }
+    }
+
+    @Override
+    public List<UserAccount> getAll() {
+        return mockUserDB;
     }
 }

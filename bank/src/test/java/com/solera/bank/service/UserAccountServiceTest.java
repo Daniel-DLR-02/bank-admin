@@ -2,8 +2,7 @@ package com.solera.bank.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.solera.bank.model.UserAccount;
-import com.solera.bank.repository.AccountRepos;
-import com.solera.bank.repository.UserRepos;
+
 import com.solera.bank.service.impl.UserAccountServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
