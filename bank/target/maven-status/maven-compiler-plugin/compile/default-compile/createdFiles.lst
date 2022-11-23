@@ -1,5 +1,6 @@
 com\solera\bank\model\Transactions$TransactionsBuilder.class
 com\solera\bank\service\UserAccountService.class
+com\solera\bank\config\cors\CorsFilter.class
 com\solera\bank\model\dto\LoginDto.class
 com\solera\bank\service\impl\UserAccountServiceImpl.class
 com\solera\bank\model\UserAccount$UserAccountBuilder.class
