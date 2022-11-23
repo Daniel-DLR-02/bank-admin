@@ -1,0 +1,10 @@
+
+.login{
+    width: 30%;
+    margin: 5% 35%;
+}
+
+.btn-primary, .btn-primary:hover, .btn-primary:active, .btn-primary:visited{
+    background-color: #3e50b4;
+    border: 1px solid #3e50b4;
+}
