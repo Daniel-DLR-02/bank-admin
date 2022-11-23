@@ -2,6 +2,8 @@ package com.solera.bank.model;
 
 import lombok.*;
 
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,6 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 public class UserAccount {
 
+    @GeneratedValue(strategy= GenerationType.AUTO)
     private Long id;
     private String name;
     private String lastName;
