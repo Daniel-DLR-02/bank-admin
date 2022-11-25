@@ -1,91 +1,76 @@
 package com.solera.bank.service.impl;
 
 import com.solera.bank.model.UserAccount;
+import com.solera.bank.model.dto.CreateUserAccountDto;
+import com.solera.bank.repository.UserAccountRepos;
 import com.solera.bank.service.UserAccountService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @Service
-public class UserAccountServiceImpl implements UserAccountService {
+@RequiredArgsConstructor
+public class UserAccountServiceImpl implements UserAccountService, UserDetailsService {
 
-    List<UserAccount> mockUserDB = new ArrayList<>();
+    private final UserAccountRepos userAccountRepos;
 
-    @PostConstruct
-    public void initData() {
-        UserAccount adminUser = UserAccount.builder()
-                .id(1L)
-                .name("Admin")
-                .lastName("bank")
-                .userName("solera@solera.com")
-                .password("bootcamp4")
-                .build();
 
-        mockUserDB.add(adminUser);
 
+    @Override
+    public UserAccount getById(UUID id) {
+        Optional<UserAccount> usuarioBuscado = userAccountRepos.findById(id);
+        if(usuarioBuscado.isEmpty()){
+            throw new EntityNotFoundException("User not found exception");
+        }
+        else{
+            return usuarioBuscado.get();
+        }
     }
 
     @Override
-    public UserAccount getById(Long id) {
-        List<UserAccount> requestedUser = new ArrayList<>();
-        for(UserAccount u : mockUserDB)
-            if(u.getId().equals(id))
-                requestedUser.add(u);
+    public UserAccount editUser(UUID id, CreateUserAccountDto userToEdit) {
 
-        if (requestedUser.size() != 1) {
-            return null;
-        }
-        else
-            return requestedUser.get(0);
-    }
+        UserAccount userAccount = getById(id);
 
-    @Override
-    public UserAccount editUser(Long id, UserAccount userToEdit) {
-        UserAccount editUser = getById(id);
-        if(editUser == null) {
-            return null;
-        }
-        else {
-            editUser.setUserName(userToEdit.getUserName());
-            editUser.setName(userToEdit.getName());
-            editUser.setPassword(userToEdit.getPassword());
-            editUser.setLastName(userToEdit.getLastName());
+        userAccount.setUserName(userToEdit.getUserName());
+        userAccount.setName(userAccount.getName());
+        userAccount.setLastName(userToEdit.getLastName());
+        userAccount.setPassword(userAccount.getPassword());
 
-        }
-        return editUser;
-
+        return userAccount;
     }
 
     @Override
     public UserAccount login(String username, String password) {
-        List<UserAccount> requestedUser = new ArrayList<>();
-        for(UserAccount u : mockUserDB)
-            if(u.getUserName().equals(username))
-                requestedUser.add(u);
-
-        if (requestedUser.size() != 1) {
-            return null;
-        }
-        else{
-            if(requestedUser.get(0).getPassword().equals(password))
-                return requestedUser.get(0);
-            else
-                return null;
-        }
+        return UserAccount.builder().build();
     }
 
     @Override
     public List<UserAccount> getAll() {
-        return mockUserDB;
+        return userAccountRepos.findAll();
     }
 
     @Override
-    public void changeVisibility(Long id) {
-
-        getById(id).toggleVisibility();
+    public void deleteAccount(UUID id) {
+        userAccountRepos.deleteById(id);
     }
 
+    @Override
+    public UserAccount save(UserAccount userAccount) {
+        return userAccountRepos.save(userAccount);
+    }
 
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return userAccountRepos.getByUserName(username);
+    }
 }

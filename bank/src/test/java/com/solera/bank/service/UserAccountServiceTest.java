@@ -3,39 +3,73 @@ package com.solera.bank.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.solera.bank.model.UserAccount;
 
+import com.solera.bank.model.dto.CreateUserAccountDto;
+import com.solera.bank.repository.UserAccountRepos;
 import com.solera.bank.service.impl.UserAccountServiceImpl;
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.web.servlet.MockMvc;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
+import javax.persistence.EntityNotFoundException;
+import java.util.Optional;
+import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mockStatic;
+import static org.mockito.Mockito.when;
 
+@RequiredArgsConstructor
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class UserAccountServiceTest {
 
     @InjectMocks
     private UserAccountServiceImpl accountService;
 
+    @Mock
+    private UserAccountRepos mockRepository;
+
     public UserAccount userTest_1;
+    public UserAccount userTest_2;
+
     public UserAccount userTest_1_edited;
+
+    public CreateUserAccountDto userTest_1_edited_dto;
+
+
     @BeforeEach
     void initTest(){
 
         userTest_1 = UserAccount.builder()
-                .id(1L)
                 .userName("UsuarioPrueba1")
                 .name("usuario")
                 .lastName("test")
                 .password("qwerty")
                 .build();
 
+        userTest_2 = UserAccount.builder()
+                .userName("UsuarioPrueba2")
+                .name("usuario2")
+                .lastName("test2")
+                .password("qwerty")
+                .build();
+
         userTest_1_edited = UserAccount.builder()
-                .id(1L)
+                .id(userTest_1.getId())
+                .userName("UsuarioPrueba1_edited")
+                .name("usuario_edited")
+                .lastName("test")
+                .password("qwerty")
+                .build();
+        userTest_1_edited_dto = CreateUserAccountDto.builder()
                 .userName("UsuarioPrueba1_edited")
                 .name("usuario_edited")
                 .lastName("test")
@@ -45,39 +79,48 @@ public class UserAccountServiceTest {
     }
 
     @Test
-    @DisplayName("GET user/{id}")
-    void test_getUser_returnRequestedUser() throws Exception {
-
-        assertEquals(userTest_1,accountService.getById(1L));
-
+    @DisplayName("Get user by id success")
+    void test_getUser_returnRequestedUser() {
+        when(mockRepository.findById(userTest_1.getId())).thenReturn(Optional.ofNullable(userTest_1));
+        assertEquals(userTest_1,accountService.getById(userTest_1.getId()));
     }
 
+    @Test
+    @DisplayName("Get user by id")
+    void test_getUser_throwsNotFound() {
+        assertThrows(EntityNotFoundException.class,()->accountService.getById(any(UUID.class)));
+    }
 
-    //Testeable al añadir la base de datos
+    @Test
+    @DisplayName("Create user succes")
+    void test_saveUser_success(){
+        when(mockRepository.save(userTest_1)).thenReturn(userTest_1);
+        assertEquals(userTest_1,accountService.save(userTest_1));
+    }
+
+    // Hay que añadir validación
+
     /*@Test
-    @DisplayName("POST user/add")
-    void test_addUserSuccess() throws Exception {
-
-
-
+    @DisplayName("Create user fails")
+    void test_saveUser_throwsException(){
+        when(mockRepository.save(userTest_1)).thenReturn(userTest_1);
+        assertEquals(userTest_1,accountService.save(""));
     }*/
 
 
+
     @Test
-    @DisplayName("PUT user/edit/{id}")
-    void test_updateUserSuccess() throws Exception {
+    @DisplayName("Edit user success.")
+    void test_updateUser_success() throws Exception {
+        when(mockRepository.findById(userTest_1.getId())).thenReturn(Optional.ofNullable(userTest_1_edited));
+        when(mockRepository.save(userTest_1)).thenReturn(userTest_1);
 
-        assertEquals(userTest_1_edited,
-                accountService.editUser(1L,new UserAccount().builder()
-                        .id(1L)
-                        .userName("UsuarioPrueba1_edited")
-                        .name("usuario_edited")
-                        .lastName("test")
-                        .password("qwerty")
-                        .build()));
-
+        assertEquals(userTest_1_edited,accountService.editUser(userTest_1.getId(),userTest_1_edited_dto));
     }
 
+
+    //Añadir token jwt
+    /*
     @Test
     @DisplayName("POST user/login")
     void test_LoginSuccess() throws Exception {
@@ -85,14 +128,8 @@ public class UserAccountServiceTest {
         assertEquals(true,
                 accountService.login("UsuarioPrueba1_edited","password"));
 
-    }
-
-
-    //Testeable con la base de datos.
-    /*@Test
-    @DisplayName("POST user/add")
-    void test_addUserFail() throws Exception {
-
-
     }*/
+
+
+
 }

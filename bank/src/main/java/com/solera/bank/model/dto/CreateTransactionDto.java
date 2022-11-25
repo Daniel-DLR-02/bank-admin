@@ -3,6 +3,8 @@ package com.solera.bank.model.dto;
 
 import lombok.*;
 
+import java.util.UUID;
+
 @Getter
 @Setter
 @Builder
@@ -10,8 +12,8 @@ import lombok.*;
 @AllArgsConstructor
 public class CreateTransactionDto {
 
-    private String userOrigin;
-    private String userDestiny;
+    private UUID userOriginId;
+    private UUID userDestinyId;
     private String money;
 
 }

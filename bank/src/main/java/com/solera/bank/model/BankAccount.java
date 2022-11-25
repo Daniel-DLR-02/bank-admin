@@ -4,16 +4,18 @@ import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import java.util.UUID;
 
+@Entity
 @Getter
 @Setter
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
-@Entity
-public class Transaction {
+@NoArgsConstructor
+public class BankAccount {
 
     @Id
     @GeneratedValue(generator = "UUID")
@@ -29,12 +31,6 @@ public class Transaction {
     )
     private UUID id;
 
-    @ManyToOne
-    private UserAccount userOrigin;
-
-    @ManyToOne
-    private UserAccount userDestiny;
-
-    private String money;
+    private String bankName;
 
 }

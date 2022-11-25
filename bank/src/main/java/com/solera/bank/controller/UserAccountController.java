@@ -1,6 +1,7 @@
 package com.solera.bank.controller;
 
 import com.solera.bank.model.UserAccount;
+import com.solera.bank.model.dto.CreateUserAccountDto;
 import com.solera.bank.model.dto.LoginDto;
 import com.solera.bank.service.UserAccountService;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/user")
@@ -19,7 +21,7 @@ public class UserAccountController {
     private final UserAccountService userService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getOneUser(@PathVariable Long id){
+    public ResponseEntity<?> getOneUser(@PathVariable UUID id){
         Optional<UserAccount> userToReturn = Optional.ofNullable(userService.getById(id));
         if(userToReturn == null || userToReturn.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
@@ -48,7 +50,7 @@ public class UserAccountController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UserAccount> editUser(@PathVariable Long id,@RequestBody UserAccount userData){
+    public ResponseEntity<UserAccount> editUser(@PathVariable UUID id,@RequestBody CreateUserAccountDto userData){
         Optional<UserAccount> userToEdit = Optional.ofNullable(userService.editUser(id, userData));
         if(userToEdit == null || userToEdit.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
@@ -61,7 +63,6 @@ public class UserAccountController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> disableUser(@PathVariable Long id){
-        userService.changeVisibility(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

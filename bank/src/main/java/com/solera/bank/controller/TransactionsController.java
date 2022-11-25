@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
@@ -18,7 +19,7 @@ public class TransactionsController {
     private final TransactionService transactionService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<List<Transaction>> getAllFromUser(@PathVariable Long id){
+    public ResponseEntity<List<Transaction>> getAllFromUser(@PathVariable UUID id){
         List<Transaction> transactions = transactionService.getTransactionsFromUser(id);
         if(transactions == null)
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
